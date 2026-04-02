@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS – Journal</title>
+  <link rel="icon" type="image/svg+xml" href="/images/LifeOS small logo.svg">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/styles/journal.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="journal-body">
+
+  <!-- ambient blobs -->
+  <div class="los-blob los-blob--1"></div>
+  <div class="los-blob los-blob--2"></div>
+  <div class="los-blob los-blob--3"></div>
+
+  <!-- Navbar -->
+  <nav class="los-nav">
+    <a href="/" class="los-nav__logo">
+      <img src="/images/LifeOS logo.svg" alt="LifeOS">
+    </a>
+    <ul class="los-nav__links">
+      <li><a href="/">Dashboard</a></li>
+      <li><a href="/journal" class="active">Journal</a></li>
+      <li><a href="/tasks">Tasks</a></li>
+      <li><a href="/insights">Insights</a></li>
+    </ul>
+    <button class="los-nav__logout" onclick="document.getElementById('logoutModal').classList.add('active')">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+    </button>
+    <button class="los-nav__hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="los-nav__mobile" id="mobileMenu" onclick="handleOverlayClick(event)">
+    <button class="los-nav__mobile-close" onclick="toggleMenu()" aria-label="Close menu">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <a href="/">Dashboard</a>
+    <a href="/journal" class="active">Journal</a>
+    <a href="/tasks">Tasks</a>
+    <a href="/insights">Insights</a>
+    <button class="los-nav__mobile-logout" onclick="toggleMenu(); document.getElementById('logoutModal').classList.add('active')">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+    </button>
+  </div>
+
+  <div class="journal-page">
+    <main class="journal-main">
+
+      <!-- Header row -->
+      <div class="journal-title-row anim anim-d1">
+        <!-- Frosted pill -->
+        <div class="journal-title-pill">
+          <h1 class="journal-title-pill__title">Journal</h1>
+          <span class="journal-title-pill__count" id="entryCount"><%= entryCount %> <%= entryCount === 1 ? 'Entry' : 'Entries' %></span>
+        </div>
+        <button class="btn-los-primary" onclick="openEntryModal()">
+          <i class="fa-solid fa-pen-to-square"></i> New Entry
+        </button>
+      </div>
+
+      <!-- White card -->
+      <div class="journal-card">
+        <div class="journal-scroll-wrap" id="journalWrap">
+        <div class="journal-card__body" id="journalBody">
+        </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- New Entry Modal -->
+  <div class="modal-overlay" id="newEntryModal" onclick="closeEntryModal(event)">
+    <div class="modal modal--view" onclick="event.stopPropagation()">
+      <div class="modal__header">
+        <h2 class="modal__header-title">Today's Reflection</h2>
+        <p class="modal__header-date" id="modalDate"></p>
+      </div>
+      <form id="newEntryForm" onsubmit="saveNewEntry(event)">
+        <label class="modal__label" for="modalTitle">Title</label>
+        <input class="modal__input modal__input--title" id="modalTitle" name="title" type="text"
+          placeholder="Journal title" required>
+
+        <label class="modal__label" for="modalContent">How was your day?</label>
+        <textarea class="modal__input" id="modalContent" name="content" rows="4"
+          placeholder="What's on your mind today?" required></textarea>
+
+        <label class="modal__label">How are you feeling?</label>
+        <div class="modal-mood">
+          <div class="modal-mood__option mood--terrible" data-mood="Terrible" onclick="selectModalMood(this)">
+            <span class="modal-mood__emoji">😡</span>
+            <span class="modal-mood__label">Terrible</span>
+          </div>
+          <div class="modal-mood__option mood--bad" data-mood="Bad" onclick="selectModalMood(this)">
+            <span class="modal-mood__emoji">☹️</span>
+            <span class="modal-mood__label">Bad</span>
+          </div>
+          <div class="modal-mood__option mood--okay" data-mood="Okay" onclick="selectModalMood(this)">
+            <span class="modal-mood__emoji">😐</span>
+            <span class="modal-mood__label">Okay</span>
+          </div>
+          <div class="modal-mood__option mood--good" data-mood="Good" onclick="selectModalMood(this)">
+            <span class="modal-mood__emoji">😊</span>
+            <span class="modal-mood__label">Good</span>
+          </div>
+          <div class="modal-mood__option mood--excellent" data-mood="Excellent" onclick="selectModalMood(this)">
+            <span class="modal-mood__emoji">😄</span>
+            <span class="modal-mood__label">Excellent</span>
+          </div>
+        </div>
+
+        <input type="hidden" id="modalMood" name="mood" value="">
+
+        <div class="modal__actions">
+          <button type="button" class="btn-los-ghost" onclick="closeEntryModal()">Cancel</button>
+          <button type="submit" class="btn-los-primary"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Entry Modal -->
+  <div class="modal-overlay" id="viewEntryModal" onclick="closeViewModal(event)">
+    <div class="modal modal--view" onclick="event.stopPropagation()">
+      <div class="modal__view-header">
+        <h2 class="modal__view-title" id="viewModalTitle"></h2>
+        <p class="modal__view-date" id="viewModalDate"></p>
+      </div>
+      <div class="modal__view-mood" id="viewModalMoodBadge"></div>
+      <label class="modal__view-label">Reflection</label>
+      <div class="modal__view-content" id="viewModalContent"></div>
+      <div class="modal__actions">
+        <button type="button" class="btn-los-ghost" onclick="closeViewModal()">Close</button>
+        <button type="button" class="btn-los-primary" id="viewToEditBtn"><i class="fa-solid fa-pen"></i> Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Entry Modal -->
+  <div class="modal-overlay" id="editEntryModal" onclick="closeEditModal(event)">
+    <div class="modal modal--view" onclick="event.stopPropagation()">
+      <div class="modal__header">
+        <h2 class="modal__header-title">Edit Journal</h2>
+        <p class="modal__header-date" id="editModalDate"></p>
+      </div>
+      <form id="editEntryForm" onsubmit="saveEditEntry(event)">
+        <label class="modal__label" for="editModalTitle">Title</label>
+        <input class="modal__input modal__input--title" id="editModalTitle" name="title" type="text" placeholder="Journal title">
+
+        <label class="modal__label" for="editModalContent">How was your day?</label>
+        <textarea class="modal__input" id="editModalContent" name="content" rows="4"
+          placeholder="What's on your mind today?"></textarea>
+
+        <label class="modal__label">How are you feeling?</label>
+        <div class="modal-mood" id="editMoodPicker">
+          <div class="modal-mood__option mood--terrible" data-mood="Terrible" onclick="selectEditMood(this)"><span class="modal-mood__emoji">😡</span><span class="modal-mood__label">Terrible</span></div>
+          <div class="modal-mood__option mood--bad"      data-mood="Bad"      onclick="selectEditMood(this)"><span class="modal-mood__emoji">☹️</span><span class="modal-mood__label">Bad</span></div>
+          <div class="modal-mood__option mood--okay"     data-mood="Okay"     onclick="selectEditMood(this)"><span class="modal-mood__emoji">😐</span><span class="modal-mood__label">Okay</span></div>
+          <div class="modal-mood__option mood--good"     data-mood="Good"     onclick="selectEditMood(this)"><span class="modal-mood__emoji">😊</span><span class="modal-mood__label">Good</span></div>
+          <div class="modal-mood__option mood--excellent" data-mood="Excellent" onclick="selectEditMood(this)"><span class="modal-mood__emoji">😄</span><span class="modal-mood__label">Excellent</span></div>
+        </div>
+        <input type="hidden" id="editModalMood" name="mood" value="">
+
+        <div class="modal__actions">
+          <button type="button" class="btn-los-ghost" onclick="closeEditModal()">Cancel</button>
+          <button type="submit" class="btn-los-primary"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div class="del-overlay" id="deleteModal">
+    <div class="del-card">
+      <div class="del-card__icon">
+        <i class="fa-solid fa-trash"></i>
+      </div>
+      <h2 class="del-card__title">Delete Entry?</h2>
+      <p class="del-card__sub">This can't be undone.</p>
+      <div class="del-card__actions">
+        <button class="btn-los-ghost" onclick="hideDeleteModal()">
+          <i class="fa-solid fa-xmark"></i> Cancel
+        </button>
+        <button class="btn-danger" onclick="confirmDelete()">
+          <i class="fa-solid fa-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/journal.js"></script>
+
+  <!-- Logout Confirmation Modal -->
+  <div class="del-overlay" id="logoutModal" onclick="if(event.target===this)this.classList.remove('active')">
+    <div class="del-card">
+      <div class="del-card__icon">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </div>
+      <p class="del-card__title">Log out?</p>
+      <p class="del-card__sub">You'll need to sign back in to access your data.</p>
+      <div class="del-card__actions">
+        <button class="btn-los-ghost" onclick="document.getElementById('logoutModal').classList.remove('active')">Cancel</button>
+        <a href="/auth/logout" class="btn-danger">Log out</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

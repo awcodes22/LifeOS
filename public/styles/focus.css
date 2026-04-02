@@ -1,0 +1,185 @@
+/* Focus Mode */
+
+.focus-page {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.focus-card {
+  text-align: center;
+  padding: 3.5rem 4rem;
+}
+
+.focus-label {
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.focus-timer {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(7rem, 20vw, 14rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 2.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.focus-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  margin-bottom: 3rem;
+}
+
+.focus-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--blue-200);
+  transition: background 0.3s, transform 0.3s;
+}
+
+.focus-dot.active {
+  background: var(--blue-500);
+  transform: scale(1.35);
+}
+
+.focus-dot.done {
+  background: var(--blue-400);
+}
+
+.focus-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.focus-btn-icon {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: #ffffff;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.focus-btn-icon:hover {
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+  transform: translateY(-1px);
+}
+
+.focus-btn-play {
+  width: 126px;
+  height: 126px;
+  border-radius: 50%;
+  border: none;
+  background: var(--blue-600);
+  color: #ffffff;
+  font-size: 2.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.35);
+}
+
+.focus-btn-play:hover {
+  background: var(--blue-700, #1d4ed8);
+  box-shadow: 0 8px 28px rgba(37, 99, 235, 0.45);
+  transform: translateY(-2px);
+}
+
+.focus-btn-play:active {
+  transform: translateY(0);
+}
+
+.focus-back {
+  position: fixed;
+  top: 2.5rem;
+  left: 3rem;
+  z-index: 10;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 20px;
+  color: var(--text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.focus-back:hover {
+  color: var(--blue-600);
+}
+
+/* Focus blob overrides (bigger blobs for focus page) */
+.focus-page ~ .los-blob--1,
+.los-blob--1.focus-blob {
+  width: 980px;
+  height: 980px;
+  animation: focusDrift1 4s ease-in-out infinite;
+}
+
+.focus-page-blobs .los-blob--1 {
+  width: 980px;
+  height: 980px;
+  animation: focusDrift1 4s ease-in-out infinite;
+}
+
+.focus-page-blobs .los-blob--2 {
+  width: 860px;
+  height: 860px;
+  animation: focusDrift2 5s ease-in-out infinite;
+}
+
+.focus-page-blobs .los-blob--3 {
+  width: 740px;
+  height: 740px;
+  animation: focusDrift3 6s ease-in-out infinite;
+}
+
+@keyframes focusDrift1 {
+  0%   { transform: translate(0px,     0px)   scale(1);    }
+  33%  { transform: translate(-150px,  130px) scale(1.15); }
+  66%  { transform: translate(130px,  -110px) scale(0.9);  }
+  100% { transform: translate(0px,     0px)   scale(1);    }
+}
+
+@keyframes focusDrift2 {
+  0%   { transform: translate(0px,     0px)   scale(1);    }
+  33%  { transform: translate(160px,  -140px) scale(1.13); }
+  66%  { transform: translate(-130px,  150px) scale(0.88); }
+  100% { transform: translate(0px,     0px)   scale(1);    }
+}
+
+@keyframes focusDrift3 {
+  0%   { transform: translate(0px,     0px)   scale(1);    }
+  40%  { transform: translate(-140px, -130px) scale(1.16); }
+  70%  { transform: translate(150px,   120px) scale(0.87); }
+  100% { transform: translate(0px,     0px)   scale(1);    }
+}

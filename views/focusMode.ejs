@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS – Focus Mode</title>
+  <link rel="icon" type="image/svg+xml" href="/images/LifeOS small logo.svg">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/styles/focus.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+  <!-- Bigger blobs for focus page -->
+  <div class="focus-page-blobs">
+    <div class="los-blob los-blob--1"></div>
+    <div class="los-blob los-blob--2"></div>
+    <div class="los-blob los-blob--3"></div>
+  </div>
+
+
+  <a href="/" class="focus-back anim anim-d1">
+    <i class="fa-solid fa-chevron-left"></i>
+    Dashboard
+  </a>
+
+  <div class="focus-page">
+    <div class="focus-card">
+
+      <!-- Label -->
+      <p class="focus-label anim anim-d2" id="focusLabel">Focus Session</p>
+
+      <!-- Timer -->
+      <div class="focus-timer anim anim-d3" id="focusTimer">25:00</div>
+
+      <!-- Session dot indicators -->
+      <div class="focus-dots anim anim-d4" id="focusDots">
+        <div class="focus-dot active"></div>
+        <div class="focus-dot"></div>
+        <div class="focus-dot"></div>
+        <div class="focus-dot"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="focus-controls anim anim-d5">
+        <button class="focus-btn-icon" onclick="resetTimer()" title="Restart">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+        <button class="focus-btn-play" id="playBtn" onclick="toggleTimer()">
+          <i class="fa-solid fa-play" id="playIcon"></i>
+        </button>
+        <button class="focus-btn-icon" onclick="skipSession()" title="Skip">
+          <i class="fa-solid fa-forward-step"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/focus.js"></script>
+
+</body>
+
+</html>

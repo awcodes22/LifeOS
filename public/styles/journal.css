@@ -1,0 +1,512 @@
+/* Journal */
+
+/* journal locks scroll on page body, the inner list scrolls */
+.journal-body {
+  overflow: hidden;
+  height: 100vh;
+}
+
+.journal-page {
+  min-height: calc(100vh - 84px);
+  display: flex;
+  flex-direction: column;
+}
+
+.journal-main {
+  flex: 1;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.journal-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+
+.journal-title-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.875rem 0;
+}
+
+.journal-title-pill__title {
+  font-size: 2.875rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #1e293b;
+  margin: 0;
+}
+
+.journal-title-pill__count {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 18px;
+  background: #ffffff;
+  border: 1.5px solid var(--blue-200);
+  border-radius: 999px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--blue-600);
+  box-shadow: var(--shadow-sm);
+}
+
+.journal-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.journal-scroll-wrap {
+  position: relative;
+  max-height: calc(100vh - 300px);
+  margin: 0 -2rem;
+}
+
+.journal-scroll-wrap.is-empty {
+  margin: 0;
+}
+
+.journal-scroll-wrap::before,
+.journal-scroll-wrap::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 48px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.journal-scroll-wrap::before {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(237, 245, 255, 0.95), transparent);
+}
+
+.journal-scroll-wrap::after {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(237, 245, 255, 0.95), transparent);
+}
+
+.journal-scroll-wrap.fade-top::before   { opacity: 1; }
+.journal-scroll-wrap.fade-bottom::after { opacity: 1; }
+
+.journal-card__body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 300px;
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.journal-card__body.has-entries {
+  padding: 1.25rem 2rem 1.5rem;
+}
+
+.journal-card__body::-webkit-scrollbar { width: 6px; }
+.journal-card__body::-webkit-scrollbar-track { background: transparent; }
+.journal-card__body::-webkit-scrollbar-thumb {
+  background: var(--blue-200);
+  border-radius: 999px;
+}
+.journal-card__body::-webkit-scrollbar-thumb:hover { background: var(--blue-400); }
+
+.jentry {
+  display: block;
+  padding: 1.25rem 2rem;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease;
+}
+
+.jentry:hover {
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.13);
+  transform: translateY(-4px);
+  border-color: var(--blue-200);
+}
+
+.jentry__label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+}
+
+.jentry__title {
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: #4b5563;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.jentry__field-label { display: none; }
+.jentry__label-right { display: flex; align-items: center; gap: 8px; }
+.jentry__content-box { display: contents; }
+
+.jentry__content {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0.75rem 0 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.125rem;
+}
+
+.jentry__date {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.jentry__mood {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+}
+
+.jentry__mood-emoji { font-size: 1.25rem; line-height: 1; }
+.jentry__mood-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+.jentry__mood--excellent { border-color: #22c55e; }
+.jentry__mood--good      { border-color: #84cc16; }
+.jentry__mood--okay      { border-color: #eab308; }
+.jentry__mood--bad       { border-color: #f97316; }
+.jentry__mood--terrible  { border-color: #ef4444; }
+
+.jentry__icon-btn--view:hover {
+  color: var(--blue-600);
+  border-color: var(--blue-300);
+  background: var(--blue-50);
+}
+
+.jentry__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+  padding-top: 0;
+}
+
+.jentry__btn-view {
+  display: none;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.jentry__secondary { display: flex; gap: 8px; }
+.jentry__secondary form { display: flex; }
+
+/* action buttons section inside entry (view/edit/delete) */
+.jentry__actions-left {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.jentry__icon-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 22px;
+  border: 1.5px solid var(--border);
+  background: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+  font-family: 'Inter', sans-serif;
+  border-radius: 14px;
+}
+
+.jentry__icon-btn i { font-size: 1.1rem; }
+
+.jentry__icon-btn--view  { color: var(--blue-600); }
+.jentry__icon-btn--edit  { color: var(--blue-600); }
+.jentry__icon-btn--delete { color: var(--text-muted); border-color: var(--border); }
+
+.jentry__icon-btn--view:hover, .jentry__icon-btn--edit:hover {
+  background: var(--blue-600);
+  border-color: var(--blue-600);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.jentry__icon-btn--delete:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.journal-card__body .los-empty {
+  padding: 12rem 2rem;
+}
+
+.journal-page > footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  background: transparent;
+  padding: 1rem 2rem 1.25rem;
+}
+
+.journal-main { padding-bottom: 5rem; }
+
+
+/* Journal view modal header */
+.modal__view-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.875rem;
+}
+
+.modal__view-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+}
+
+.modal__view-date {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 0.3rem;
+}
+
+.modal__view-mood { margin-bottom: 1rem; }
+
+.modal__view-label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+
+.modal__view-content {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  padding: 0.875rem 1rem;
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  white-space: pre-wrap;
+}
+
+/* Modal (shared with dashboard) */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  width: 100%;
+  max-width: 560px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+  transform: translateY(12px) scale(0.97);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+
+.modal-overlay.open .modal { transform: translateY(0) scale(1); opacity: 1; }
+
+.modal--view { max-width: 700px; }
+
+.modal__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.modal__header-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal__header-date {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.modal__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1.5rem;
+}
+
+.modal__label {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.modal__input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.875rem 1.125rem;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  background: #ffffff;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  margin-bottom: 1.25rem;
+}
+
+.modal__input::placeholder { color: #94a3b8; }
+.modal__input:focus { border-color: var(--blue-400); box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15); }
+
+textarea.modal__input {
+  resize: vertical;
+  min-height: 110px;
+  max-height: 220px;
+  line-height: 1.6;
+}
+
+input.modal__input--title {
+  margin-bottom: 1rem;
+}
+
+.modal-mood {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.modal-mood__option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 0.75rem 0.25rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border);
+  background: var(--bg-base);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  user-select: none;
+}
+
+.modal-mood__option:hover { border-color: var(--border-hover); background: #fff; transform: translateY(-1px); }
+.modal-mood__option.selected { border-color: var(--blue-400); background: var(--blue-50); }
+.modal-mood__option.selected.mood--excellent { border-color: #22c55e; background: #f0fdf4; }
+.modal-mood__option.selected.mood--good      { border-color: #84cc16; background: #f7fee7; }
+.modal-mood__option.selected.mood--okay      { border-color: #eab308; background: #fefce8; }
+.modal-mood__option.selected.mood--bad       { border-color: #f97316; background: #fff7ed; }
+.modal-mood__option.selected.mood--terrible  { border-color: #ef4444; background: #fef2f2; }
+.modal-mood__emoji { font-size: 1.75rem; line-height: 1; }
+.modal-mood__label { font-size: 0.8125rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.modal__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 1.75rem;
+}
+
+.modal__actions .btn-los-ghost,
+.modal__actions .btn-los-primary { flex: 1; justify-content: center; }
+
+.btn-modal-delete {
+  background: #ef4444;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .journal-main { padding: 1.5rem 1rem 3rem; }
+  .journal-title-pill__title { font-size: 1.75rem; }
+  .journal-title-row { gap: 0.75rem; flex-wrap: wrap; }
+  .journal-card__body.has-entries { padding: 1rem 1rem 1.25rem; }
+  .journal-scroll-wrap { margin: 0 -1rem; }
+  .jentry { padding: 1rem 1.25rem; }
+  .jentry__icon-btn { padding: 8px 14px; font-size: 0.75rem; }
+  .jentry__mood { padding: 5px 10px; gap: 5px; }
+  .jentry__mood-label { font-size: 0.75rem; }
+  .modal { padding: 1.5rem; margin: 1rem; }
+  .modal-mood { gap: 5px; }
+  .modal-mood__option { padding: 0.625rem 0.125rem; }
+  .modal-mood__emoji { font-size: 1.25rem; }
+  .modal-mood__label { font-size: 0.625rem; }
+}
+
+@media (max-width: 480px) {
+  .journal-title-pill__title { font-size: 1.5rem; }
+  .journal-title-pill__count { font-size: 0.875rem; padding: 4px 12px; }
+  .journal-title-row .btn-los-primary { padding: 10px 16px; font-size: 0.875rem; }
+  .jentry__secondary { gap: 6px; }
+  .jentry__icon-btn { padding: 7px 11px; }
+  .journal-card__body .los-empty { padding: 6rem 1.5rem; }
+}

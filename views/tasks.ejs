@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS – Tasks</title>
+  <link rel="icon" type="image/svg+xml" href="/images/LifeOS small logo.svg">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/styles/tasks.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+  <div class="los-blob los-blob--1"></div>
+  <div class="los-blob los-blob--2"></div>
+  <div class="los-blob los-blob--3"></div>
+
+  <nav class="los-nav">
+    <a href="/" class="los-nav__logo">
+      <img src="/images/LifeOS logo.svg" alt="LifeOS">
+    </a>
+    <ul class="los-nav__links">
+      <li><a href="/">Dashboard</a></li>
+      <li><a href="/journal">Journal</a></li>
+      <li><a href="/tasks" class="active">Tasks</a></li>
+      <li><a href="/insights">Insights</a></li>
+    </ul>
+    <button class="los-nav__logout" onclick="document.getElementById('logoutModal').classList.add('active')">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+    </button>
+    <button class="los-nav__hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="los-nav__mobile" id="mobileMenu" onclick="handleOverlayClick(event)">
+    <button class="los-nav__mobile-close" onclick="toggleMenu()" aria-label="Close menu">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <a href="/">Dashboard</a>
+    <a href="/journal">Journal</a>
+    <a href="/tasks" class="active">Tasks</a>
+    <a href="/insights">Insights</a>
+    <button class="los-nav__mobile-logout"
+      onclick="toggleMenu(); document.getElementById('logoutModal').classList.add('active')">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+    </button>
+  </div>
+
+  <div class="tasks-page">
+    <main class="tasks-main">
+
+      <div class="tasks-title-row anim anim-d1">
+        <div class="tasks-title-pill">
+          <h1 class="tasks-title-pill__title">Tasks</h1>
+          <span class="tasks-title-pill__count" id="js-count">
+            <%= taskTotal===0 ? '0 tasks' : `${taskDone}/${taskTotal} completed` %>
+          </span>
+        </div>
+        <button class="btn-los-primary" onclick="openModal('addModal')">
+          <i class="fa-solid fa-plus"></i> New Task
+        </button>
+      </div>
+
+      <!-- Filter and sort controls -->
+      <div class="tasks-controls anim anim-d2">
+        <div class="tasks-filter-group">
+          <button class="ctrl-btn active" data-filter="all" onclick="setFilter('all')">All</button>
+          <button class="ctrl-btn" data-filter="high" onclick="setFilter('high')"><span class="dot"></span>
+            High</button>
+          <button class="ctrl-btn" data-filter="medium" onclick="setFilter('medium')"><span class="dot"></span>
+            Medium</button>
+          <button class="ctrl-btn" data-filter="low" onclick="setFilter('low')"><span class="dot"></span> Low</button>
+          <button class="ctrl-btn" data-filter="completed" onclick="setFilter('completed')"><i
+              class="fa-solid fa-check"></i> Completed</button>
+        </div>
+        <div class="tasks-sort-group">
+          <button class="ctrl-btn active" data-sort="time-desc" onclick="setSort('time-desc')"><i
+              class="fa-solid fa-arrow-up-wide-short"></i> Newest</button>
+          <button class="ctrl-btn" data-sort="time-asc" onclick="setSort('time-asc')"><i
+              class="fa-solid fa-arrow-down-wide-short"></i> Oldest</button>
+          <button class="ctrl-btn" data-sort="priority" onclick="setSort('priority')"><i class="fa-solid fa-signal"></i>
+            Priority</button>
+        </div>
+      </div>
+
+      <!-- Task list -->
+      <div class="tasks-section-card anim anim-d3">
+        <div class="tasks-list" id="taskList"></div>
+
+        <div class="tasks-empty" id="tasksEmpty" style="display:none;">
+          <span class="tasks-empty__icon"><i class="fa-solid fa-list-check"></i></span>
+          <p id="tasksEmptyMsg">No tasks yet. Every productive day begins with a task.</p>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Add Task Modal -->
+  <div class="modal-overlay" id="addModal" onclick="closeModal('addModal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h2 class="modal__title">New Task</h2>
+      <label class="modal__label" for="taskInput">Task</label>
+      <input type="text" class="modal__input" id="taskInput" placeholder="What needs to be done?" autocomplete="off">
+      <label class="modal__label" for="descInput">Description</label>
+      <textarea class="modal__input" id="descInput" rows="3" placeholder="Add a description (optional)"></textarea>
+      <label class="modal__label">Priority</label>
+      <div class="priority-picker" id="addPriorityPicker">
+        <button type="button" class="priority-pick-btn" data-pick="high" onclick="pickPriority('high')"><span
+            class="dot"></span> High</button>
+        <button type="button" class="priority-pick-btn selected" data-pick="medium"
+          onclick="pickPriority('medium')"><span class="dot"></span> Medium</button>
+        <button type="button" class="priority-pick-btn" data-pick="low" onclick="pickPriority('low')"><span
+            class="dot"></span> Low</button>
+      </div>
+      <div class="modal__actions">
+        <button class="btn-los-ghost" onclick="closeModal('addModal')">Cancel</button>
+        <button class="btn-los-primary" onclick="submitAddModal()"><i class="fa-solid fa-plus"></i> Add Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal-overlay" id="editModal" onclick="closeModal('editModal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h2 class="modal__title">Edit Task</h2>
+      <label class="modal__label" for="editInput">Task</label>
+      <input type="text" class="modal__input" id="editInput" autocomplete="off">
+      <label class="modal__label" for="editDesc">Description</label>
+      <textarea class="modal__input" id="editDesc" rows="3" placeholder="Add a description (optional)"></textarea>
+      <label class="modal__label">Priority</label>
+      <div class="priority-picker" id="editPriorityPicker">
+        <button type="button" class="priority-pick-btn" data-pick="high" onclick="setEditPriority('high')"><span
+            class="dot"></span> High</button>
+        <button type="button" class="priority-pick-btn selected" data-pick="medium"
+          onclick="setEditPriority('medium')"><span class="dot"></span> Medium</button>
+        <button type="button" class="priority-pick-btn" data-pick="low" onclick="setEditPriority('low')"><span
+            class="dot"></span> Low</button>
+      </div>
+      <div class="modal__actions">
+        <button class="btn-los-ghost" onclick="closeModal('editModal')">Cancel</button>
+        <button class="btn-los-primary" onclick="saveEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" id="deleteModal" onclick="closeModal('deleteModal')">
+    <div class="modal modal--delete" onclick="event.stopPropagation()">
+      <h2 class="modal__title">Delete Task</h2>
+      <p class="modal__body-text">Are you sure you want to delete this task? This cannot be undone.</p>
+      <div class="modal__task-preview" id="deletePreview"></div>
+      <div class="modal__actions">
+        <button class="btn-los-ghost" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn-los-primary btn-modal-delete" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/tasks.js"></script>
+
+  <!-- Logout Confirmation Modal -->
+  <div class="del-overlay" id="logoutModal" onclick="if(event.target===this)this.classList.remove('active')">
+    <div class="del-card">
+      <div class="del-card__icon">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </div>
+      <p class="del-card__title">Log out?</p>
+      <p class="del-card__sub">You'll need to sign back in to access your data.</p>
+      <div class="del-card__actions">
+        <button class="btn-los-ghost"
+          onclick="document.getElementById('logoutModal').classList.remove('active')">Cancel</button>
+        <a href="/auth/logout" class="btn-danger">Log out</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

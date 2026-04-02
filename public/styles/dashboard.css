@@ -1,0 +1,339 @@
+/* Dashboard */
+
+.los-footer {
+  padding: 0.5rem 2rem;
+  text-align: center;
+}
+
+.los-reflections-wrap {
+  padding: 0;
+}
+
+.los-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 480px;
+  overflow-y: auto;
+  padding: 1.5rem 4px;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 1.25rem, black calc(100% - 1.25rem), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, black 1.25rem, black calc(100% - 1.25rem), transparent 100%);
+}
+
+.los-log-list::-webkit-scrollbar { display: none; }
+
+.los-log-card {
+  display: block;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 1rem 2rem;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
+}
+
+.los-log-card:hover {
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.28);
+  transform: translateY(-6px);
+  border-color: var(--blue-200);
+  cursor: pointer;
+}
+
+.los-log-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+}
+
+.los-log-card__mood-emoji { font-size: 1.5rem; line-height: 1; opacity: 0.9; }
+
+.los-log-card__content {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.los-log-card__date {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Hero */
+
+.los-hero {
+  position: relative;
+  padding: 2.5rem 2rem 0.5rem;
+  background: transparent;
+}
+
+.los-hero__inner {
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.los-hero__avatar {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 6px var(--blue-100), var(--shadow-md);
+  margin-bottom: 0.5rem;
+}
+
+.los-hero__avatar--initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--blue-400), var(--blue-600));
+  color: #ffffff;
+  font-size: 4.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  user-select: none;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 0.5rem;
+}
+
+.los-hero__greeting {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem;
+}
+
+.los-hero__date {
+  font-size: 1.0625rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  font-weight: 400;
+}
+
+.los-hero__quote {
+  display: block;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: var(--radius-xl);
+  padding: 1rem 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.los-hero__quote p {
+  font-size: 1.1875rem;
+  color: var(--text-primary);
+  font-style: italic;
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+  line-height: 1.8;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.los-hero__quote cite {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-style: normal;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.15s;
+}
+
+.los-hero__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Shared Modal styles (dashboard reflection modal) */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  width: 100%;
+  max-width: 560px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+  transform: translateY(12px) scale(0.97);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+
+.modal-overlay.open .modal { transform: translateY(0) scale(1); opacity: 1; }
+
+.modal--view { max-width: 700px; }
+
+.modal__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.modal__header-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal__header-date {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.modal__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1.5rem;
+}
+
+.modal__label {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.modal__input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.875rem 1.125rem;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  background: #ffffff;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  margin-bottom: 1.25rem;
+}
+
+.modal__input::placeholder { color: #94a3b8; }
+.modal__input:focus { border-color: var(--blue-400); box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15); }
+
+/* textarea inside modal */
+textarea.modal__input {
+  resize: vertical;
+  min-height: 110px;
+  max-height: 220px;
+  line-height: 1.6;
+}
+
+/* title input spacing */
+input.modal__input--title {
+  margin-bottom: 1rem;
+}
+
+.modal-mood {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.modal-mood__option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 0.75rem 0.25rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border);
+  background: var(--bg-base);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  user-select: none;
+}
+
+.modal-mood__option:hover { border-color: var(--border-hover); background: #fff; transform: translateY(-1px); }
+.modal-mood__option.selected { border-color: var(--blue-400); background: var(--blue-50); }
+.modal-mood__option.selected.mood--excellent { border-color: #22c55e; background: #f0fdf4; }
+.modal-mood__option.selected.mood--good      { border-color: #84cc16; background: #f7fee7; }
+.modal-mood__option.selected.mood--okay      { border-color: #eab308; background: #fefce8; }
+.modal-mood__option.selected.mood--bad       { border-color: #f97316; background: #fff7ed; }
+.modal-mood__option.selected.mood--terrible  { border-color: #ef4444; background: #fef2f2; }
+.modal-mood__emoji { font-size: 1.75rem; line-height: 1; }
+.modal-mood__label { font-size: 0.8125rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.modal__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 1.75rem;
+}
+
+.modal__actions .btn-los-ghost,
+.modal__actions .btn-los-primary { flex: 1; justify-content: center; }
+
+/* delete button inside task modal */
+.btn-modal-delete {
+  background: #ef4444;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .los-hero { padding: 2.5rem 1.25rem 5rem; }
+  .los-hero__greeting { font-size: 1.625rem; }
+  .los-log-card { padding: 1.25rem 1.25rem; }
+  .modal { padding: 1.5rem; margin: 1rem; }
+  .modal-mood { gap: 5px; }
+  .modal-mood__option { padding: 0.625rem 0.125rem; }
+  .modal-mood__emoji { font-size: 1.25rem; }
+  .modal-mood__label { font-size: 0.625rem; }
+}
+
+@media (max-width: 480px) {
+  .los-hero__avatar { width: 120px; height: 120px; }
+  .los-hero__greeting { font-size: 1.375rem; }
+  .los-hero__quote { padding: 0.875rem 1.25rem; }
+  .los-hero__quote p { font-size: 1rem; }
+  .los-hero__actions { gap: 8px; }
+  .los-hero__actions .btn-los-primary,
+  .los-hero__actions .btn-los-ghost { padding: 11px 18px; font-size: 0.9rem; }
+}

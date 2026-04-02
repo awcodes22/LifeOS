@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS – Sign Up</title>
+  <link rel="icon" type="image/svg+xml" href="/images/LifeOS small logo.svg">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/styles/auth.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+  <div class="los-blob los-blob--1"></div>
+  <div class="los-blob los-blob--2"></div>
+  <div class="los-blob los-blob--3"></div>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <div class="auth-logo">
+        <img src="/images/LifeOS small logo.svg" alt="LifeOS">
+      </div>
+
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-subtitle">Start managing your day with LifeOS</p>
+
+      <% if (typeof error !=='undefined' && error) { %>
+        <div class="auth-error">
+          <%= error %>
+        </div>
+        <% } %>
+
+          <form method="POST" action="/auth/signup">
+            <label class="auth-label" for="name">Name</label>
+            <input class="auth-input" type="text" id="name" name="name" placeholder="Your name" required
+              autocomplete="name">
+
+            <label class="auth-label" for="email">Email</label>
+            <input class="auth-input" type="email" id="email" name="email" placeholder="you@email.com" required
+              autocomplete="email">
+
+            <label class="auth-label" for="password">Password</label>
+            <div class="auth-input-wrap">
+              <input class="auth-input" type="password" id="password" name="password" placeholder="Create a password"
+                required autocomplete="new-password">
+              <button type="button" class="auth-eye" onclick="togglePassword()" id="eyeBtn">
+                <i class="fa-regular fa-eye-slash" id="eyeIcon"></i>
+              </button>
+            </div>
+
+            <button class="auth-btn" type="submit">Create Account</button>
+          </form>
+
+          <p class="auth-footer">
+            Already have an account? <a href="/auth/login">Log in</a>
+          </p>
+
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+
+</body>
+
+</html>

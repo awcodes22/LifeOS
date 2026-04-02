@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS – Login</title>
+  <link rel="icon" type="image/svg+xml" href="/images/LifeOS small logo.svg">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/styles/auth.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+  <div class="los-blob los-blob--1"></div>
+  <div class="los-blob los-blob--2"></div>
+  <div class="los-blob los-blob--3"></div>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <div class="auth-logo">
+        <img src="/images/LifeOS small logo.svg" alt="LifeOS">
+      </div>
+
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Log in to your LifeOS account</p>
+
+      <% if (typeof error !=='undefined' && error) { %>
+        <div class="auth-error">
+          <%= error %>
+        </div>
+        <% } %>
+
+          <form method="POST" action="/auth/login">
+            <label class="auth-label" for="email">Email</label>
+            <input class="auth-input" type="email" id="email" name="email" placeholder="you@email.com" required
+              autocomplete="email">
+
+            <label class="auth-label" for="password">Password</label>
+            <div class="auth-input-wrap">
+              <input class="auth-input" type="password" id="password" name="password" placeholder="Your password"
+                required autocomplete="current-password">
+              <button type="button" class="auth-eye" onclick="togglePassword()" id="eyeBtn">
+                <i class="fa-regular fa-eye-slash" id="eyeIcon"></i>
+              </button>
+            </div>
+
+            <button class="auth-btn" type="submit">Log In</button>
+          </form>
+
+          <p class="auth-footer">
+            Don't have an account? <a href="/auth/signup">Sign up</a>
+          </p>
+
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+
+</body>
+
+</html>

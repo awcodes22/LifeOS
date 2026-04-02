@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS – Insights</title>
+  <link rel="icon" type="image/svg+xml" href="/images/LifeOS small logo.svg">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/styles/insights.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+  <div class="los-blob los-blob--1"></div>
+  <div class="los-blob los-blob--2"></div>
+  <div class="los-blob los-blob--3"></div>
+
+  <nav class="los-nav">
+    <a href="/" class="los-nav__logo">
+      <img src="/images/LifeOS logo.svg" alt="LifeOS">
+    </a>
+    <ul class="los-nav__links">
+      <li><a href="/">Dashboard</a></li>
+      <li><a href="/journal">Journal</a></li>
+      <li><a href="/tasks">Tasks</a></li>
+      <li><a href="/insights" class="active">Insights</a></li>
+    </ul>
+    <button class="los-nav__logout" onclick="document.getElementById('logoutModal').classList.add('active')">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+    </button>
+    <button class="los-nav__hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="los-nav__mobile" id="mobileMenu" onclick="handleOverlayClick(event)">
+    <button class="los-nav__mobile-close" onclick="toggleMenu()" aria-label="Close menu">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <a href="/">Dashboard</a>
+    <a href="/journal">Journal</a>
+    <a href="/tasks">Tasks</a>
+    <a href="/insights" class="active">Insights</a>
+    <button class="los-nav__mobile-logout" onclick="toggleMenu(); document.getElementById('logoutModal').classList.add('active')">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+    </button>
+  </div>
+
+  <div class="insights-page">
+    <main class="insights-main">
+
+      <div class="insights-title-row anim anim-d1">
+        <h1 class="insights-title">Insights</h1>
+      </div>
+
+      <div class="insights-grid">
+
+        <!-- Journal -->
+        <div class="ins-cat-card anim anim-d2">
+          <div class="ins-cat-header">
+            <div class="ins-cat-icon ins-cat-icon--blue">
+              <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div class="ins-cat-header-body">
+              <p class="ins-cat-label">Journal</p>
+              <p class="ins-cat-value" id="stat-total-logs"><%= insights.totalLogs %></p>
+              <p class="ins-cat-sub">Total entries</p>
+            </div>
+          </div>
+          <div class="ins-stats-section">
+            <div class="ins-divider"></div>
+            <div class="ins-rows">
+              <div class="ins-row">
+                <span class="ins-row__label">Total words written</span>
+                <span class="ins-row__value" id="detail-total-words"><%= insights.totalWords %></span>
+              </div>
+              <div class="ins-row">
+                <span class="ins-row__label">Average words per entry</span>
+                <span class="ins-row__value" id="detail-avg-words"><%= insights.avgWords %></span>
+              </div>
+              <div class="ins-row">
+                <span class="ins-row__label">Entries this week</span>
+                <span class="ins-row__value" id="detail-logs-week"><%= insights.logsThisWeek %></span>
+              </div>
+            </div>
+          </div>
+          <div class="ins-chart-section">
+            <div class="ins-chart-range" id="journalRangeGroup">
+              <button class="ins-range-btn ins-range-btn--blue active" data-range="week">Week</button>
+              <button class="ins-range-btn ins-range-btn--blue" data-range="month">Month</button>
+              <button class="ins-range-btn ins-range-btn--blue" data-range="year">Year</button>
+            </div>
+            <div class="ins-chart-wrap">
+              <canvas id="journalChart"></canvas>
+              <div class="ins-empty" id="journalEmpty" style="display:none">No entries in this period</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tasks -->
+        <div class="ins-cat-card anim anim-d3">
+          <div class="ins-cat-header">
+            <div class="ins-cat-icon ins-cat-icon--teal">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="ins-cat-header-body">
+              <p class="ins-cat-label">Tasks</p>
+              <p class="ins-cat-value" id="stat-tasks-done"><%= insights.completedTasks %></p>
+              <p class="ins-cat-sub" id="stat-tasks-sub">Of <%= insights.totalTasks %> completed</p>
+            </div>
+          </div>
+          <div class="ins-stats-section">
+            <div class="ins-divider"></div>
+            <div class="ins-rows">
+              <div class="ins-row">
+                <span class="ins-row__label">Total tasks</span>
+                <span class="ins-row__value" id="detail-total-tasks"><%= insights.totalTasks %></span>
+              </div>
+              <div class="ins-row">
+                <span class="ins-row__label">Pending</span>
+                <span class="ins-row__value" id="detail-tasks-pending"><%= insights.pendingTasks %></span>
+              </div>
+            </div>
+            <div class="ins-progress-wrap">
+              <div class="ins-progress-header">
+                <span>Completion rate</span>
+                <span id="detail-completion-rate"><%= insights.completionRate %>%</span>
+              </div>
+              <div class="ins-progress-bar">
+                <div class="ins-progress-fill ins-progress-fill--teal" id="completion-bar" style="width: <%= insights.completionRate %>%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="ins-chart-section">
+            <div class="ins-chart-wrap ins-chart-wrap--doughnut">
+              <canvas id="tasksChart"></canvas>
+              <div class="ins-empty" id="tasksEmpty" style="display:none">No tasks yet</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Focus -->
+        <div class="ins-cat-card anim anim-d4">
+          <div class="ins-cat-header">
+            <div class="ins-cat-icon ins-cat-icon--indigo">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="ins-cat-header-body">
+              <p class="ins-cat-label">Focus Mode</p>
+              <p class="ins-cat-value" id="stat-focus-time"><%= insights.focusTime %></p>
+              <p class="ins-cat-sub">Total focus time</p>
+            </div>
+          </div>
+          <div class="ins-stats-section">
+            <div class="ins-divider"></div>
+            <div class="ins-rows">
+              <div class="ins-row">
+                <span class="ins-row__label">Sessions completed</span>
+                <span class="ins-row__value" id="detail-sessions"><%= insights.totalSessions %></span>
+              </div>
+              <div class="ins-row">
+                <span class="ins-row__label">Sessions this week</span>
+                <span class="ins-row__value" id="detail-sessions-week"><%= insights.sessionsThisWeek %></span>
+              </div>
+              <div class="ins-row">
+                <span class="ins-row__label">Full cycles completed</span>
+                <span class="ins-row__value" id="detail-cycles"><%= insights.fullCycles %></span>
+              </div>
+            </div>
+          </div>
+          <div class="ins-chart-section">
+            <div class="ins-chart-range" id="focusRangeGroup">
+              <button class="ins-range-btn active" data-range="week">Week</button>
+              <button class="ins-range-btn" data-range="month">Month</button>
+              <button class="ins-range-btn" data-range="year">Year</button>
+            </div>
+            <div class="ins-chart-wrap">
+              <canvas id="focusChart"></canvas>
+              <div class="ins-empty" id="focusEmpty" style="display:none">No sessions in this period</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/js/insights.js"></script>
+
+  <!-- Logout confirmation modal -->
+  <div class="del-overlay" id="logoutModal" onclick="if(event.target===this)this.classList.remove('active')">
+    <div class="del-card">
+      <div class="del-card__icon">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </div>
+      <p class="del-card__title">Log out?</p>
+      <p class="del-card__sub">You'll need to sign back in to access your data.</p>
+      <div class="del-card__actions">
+        <button class="btn-los-ghost" onclick="document.getElementById('logoutModal').classList.remove('active')">Cancel</button>
+        <a href="/auth/logout" class="btn-danger">Log out</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

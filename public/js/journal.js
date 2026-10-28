@@ -38,6 +38,28 @@ function formatDate(ts) {
 
 const moodEmojis = { excellent: '😄', good: '😊', okay: '😐', bad: '☹️', terrible: '😡' };
 
+// Element builders, user data always goes in through textContent so it's never parsed as HTML
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function moodBadge(moodKey, emoji, label) {
+  const mood = el('span', `jentry__mood jentry__mood--${moodKey}`);
+  mood.append(el('span', 'jentry__mood-emoji', emoji), el('span', 'jentry__mood-label', label));
+  return mood;
+}
+
+function actionBtn(kind, icon, label, onClick) {
+  const btn = el('button', `jentry__icon-btn jentry__icon-btn--${kind}`);
+  btn.type = 'button';
+  btn.append(el('i', `fa-solid ${icon}`), ` ${label}`);
+  btn.addEventListener('click', onClick);
+  return btn;
+}
+
 // Render all cards
 function renderLogs() {
   const body = document.getElementById('journalBody');
@@ -58,36 +80,28 @@ function renderLogs() {
 
   journalWrap.classList.remove('is-empty');
   body.classList.add('has-entries');
-  body.innerHTML = logs.map((log, i) => {
+  body.replaceChildren(...logs.map((log, i) => {
     const moodKey = log.mood ? log.mood.toLowerCase() : 'okay';
     const emoji = moodEmojis[moodKey] || '😐';
-    const cardAnim = i < 5 ? `anim anim-d${i + 2}` : '';
-    return `
-      <div class="jentry ${cardAnim}">
-        <div class="jentry__label-row">
-          <p class="jentry__date">${formatDate(log.created_at)}</p>
-          <span class="jentry__mood jentry__mood--${moodKey}">
-            <span class="jentry__mood-emoji">${emoji}</span>
-            <span class="jentry__mood-label">${log.mood || ''}</span>
-          </span>
-        </div>
-        ${log.title ? `<p class="jentry__title">${log.title}</p>` : ''}
-        <p class="jentry__content">${log.content || ''}</p>
-        <div class="jentry__actions">
-          <div class="jentry__actions-left">
-            <button type="button" class="jentry__icon-btn jentry__icon-btn--view" onclick="openViewModal(${log.id})">
-              <i class="fa-solid fa-eye"></i> View
-            </button>
-            <button type="button" class="jentry__icon-btn jentry__icon-btn--edit" onclick="openEditModal(${log.id})">
-              <i class="fa-solid fa-pen"></i> Edit
-            </button>
-          </div>
-          <button type="button" class="jentry__icon-btn jentry__icon-btn--delete" onclick="showDeleteConfirm(${log.id})">
-            <i class="fa-solid fa-trash"></i> Delete
-          </button>
-        </div>
-      </div>`;
-  }).join('');
+    const card = el('div', i < 5 ? `jentry anim anim-d${i + 2}` : 'jentry');
+
+    const labelRow = el('div', 'jentry__label-row');
+    labelRow.append(el('p', 'jentry__date', formatDate(log.created_at)), moodBadge(moodKey, emoji, log.mood || ''));
+    card.append(labelRow);
+
+    if (log.title) card.append(el('p', 'jentry__title', log.title));
+    card.append(el('p', 'jentry__content', log.content || ''));
+
+    const actions = el('div', 'jentry__actions');
+    const actionsLeft = el('div', 'jentry__actions-left');
+    actionsLeft.append(
+      actionBtn('view', 'fa-eye', 'View', () => openViewModal(log.id)),
+      actionBtn('edit', 'fa-pen', 'Edit', () => openEditModal(log.id))
+    );
+    actions.append(actionsLeft, actionBtn('delete', 'fa-trash', 'Delete', () => showDeleteConfirm(log.id)));
+    card.append(actions);
+    return card;
+  }));
   updateFade();
 }
 
@@ -162,9 +176,8 @@ function openViewModal(id) {
   const moodKey = log.mood ? log.mood.toLowerCase() : '';
   const emoji = moodEmojis[moodKey] || '';
   const badge = document.getElementById('viewModalMoodBadge');
-  badge.innerHTML = moodKey && emoji
-    ? `<span class="jentry__mood jentry__mood--${moodKey}"><span class="jentry__mood-emoji">${emoji}</span><span class="jentry__mood-label">${log.mood}</span></span>`
-    : '';
+  badge.replaceChildren();
+  if (moodKey && emoji) badge.append(moodBadge(moodKey, emoji, log.mood));
 
   document.getElementById('viewToEditBtn').onclick = () => { closeViewModal(); openEditModal(id); };
   document.getElementById('viewEntryModal').classList.add('open');

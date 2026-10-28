@@ -19,6 +19,9 @@ let activeSort = 'time-desc';
 const priorityOrder = { high: 0, medium: 1, low: 2 };
 const priorityLabels = { high: 'High', medium: 'Medium', low: 'Low' };
 
+// priority goes into class names in the markup, so only allow the known values
+const safePriority = p => Object.hasOwn(priorityLabels, p) ? p : 'medium';
+
 function getSorted(list) {
   return [...list].sort((a, b) => {
     if (activeSort === 'time-desc') return new Date(b.created_at) - new Date(a.created_at);
@@ -62,7 +65,7 @@ function renderTasks() {
   empty.style.display = 'none';
 
   visible.forEach(task => {
-    const p = task.priority || 'medium';
+    const p = safePriority(task.priority);
     const wrapper = document.createElement('div');
     wrapper.className = 'task-swipe-wrapper';
 
@@ -199,7 +202,7 @@ async function saveEdit() {
 function deleteTask(id) {
   deletingId = id;
   const t = tasks.find(t => t.id === id);
-  const p = t.priority || 'medium';
+  const p = safePriority(t.priority);
   const preview = document.getElementById('deletePreview');
   preview.innerHTML = `<span></span><span class="task-priority task-priority--${p}"><span class="dot"></span></span>`;
   preview.querySelector('span').textContent = t.text;
